@@ -1,0 +1,185 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Sex {
+  male
+  female
+}
+
+enum GoalType {
+  fat_loss
+  muscle_gain
+  recomp
+  maintain
+}
+
+enum ActivityLevel {
+  sedentary
+  light
+  moderate
+  active
+  very_active
+}
+
+enum MealType {
+  breakfast
+  morning_snack
+  lunch
+  afternoon_snack
+  dinner
+  evening_snack
+}
+
+// ─── Models ──────────────────────────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  passwordHash  String?
+  googleId      String?   @unique
+  role          Role      @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastLoginAt   DateTime?
+
+  profile       Profile?
+  conversations Conversation[]
+  mealPlans     MealPlan[]
+  bodyRecords   BodyRecord[]
+  refreshTokens RefreshToken[]
+
+  @@map("users")
+}
+
+model Profile {
+  userId              String        @id
+  user                User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name                String?
+  birthDate           DateTime?
+  sex                 Sex?
+  heightCm            Float?
+  weightKg            Float?
+  goalWeightKg        Float?
+  goalType            GoalType      @default(maintain)
+  activityLevel       ActivityLevel @default(sedentary)
+  mealsPerDay         Int           @default(3)
+  dietaryRestrictions String[]
+  mealSchedule        String?
+  observations        String?
+
+  // Calculados automáticamente al guardar el perfil
+  bmrCalculated       Int?
+  tdeeCalculated      Int?
+  macrosJson          Json?
+
+  updatedAt           DateTime      @updatedAt
+
+  @@map("profiles")
+}
+
+model Conversation {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  messages  Message[]
+
+  @@map("conversations")
+}
+
+model Message {
+  id             String       @id @default(uuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           String       // 'user' | 'assistant'
+  content        String
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId, createdAt])
+  @@map("messages")
+}
+
+model MealPlan {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  weekStart DateTime
+  createdAt DateTime  @default(now())
+
+  days      MealDay[]
+
+  @@map("meal_plans")
+}
+
+model MealDay {
+  id         String     @id @default(uuid())
+  mealPlanId String
+  mealPlan   MealPlan   @relation(fields: [mealPlanId], references: [id], onDelete: Cascade)
+  dayNumber  Int        // 1-7
+  dayName    String     // "Lunes", "Martes", etc.
+
+  items      MealItem[]
+
+  @@map("meal_days")
+}
+
+model MealItem {
+  id          String   @id @default(uuid())
+  mealDayId   String
+  mealDay     MealDay  @relation(fields: [mealDayId], references: [id], onDelete: Cascade)
+  mealType    MealType
+  optionLabel String   @default("A") // 'A' | 'B'
+  name        String
+  description String?
+  calories    Int?
+  proteinG    Float?
+  carbsG      Float?
+  fatG        Float?
+
+  @@map("meal_items")
+}
+
+model BodyRecord {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recordedAt DateTime @default(now())
+  weightKg   Float
+  bodyFatPct Float?
+  waistCm    Float?
+  neckCm     Float?
+  notes      String?
+
+  @@index([userId, recordedAt])
+  @@map("body_records")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
