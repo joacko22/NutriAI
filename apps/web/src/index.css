@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-base:      120 12% 5%;
+    --bg-surface:   120 10% 8%;
+    --bg-raised:    120 8%  11%;
+    --border:       120 8%  16%;
+    --accent:       120 35% 57%;
+    --accent-light: 120 30% 72%;
+    --accent-muted: 120 15% 28%;
+    --ink:          120 10% 91%;
+    --ink-muted:    120 8%  55%;
+    --ink-faint:    120 6%  28%;
+    --danger:       0 65% 60%;
+    --warn:         40 75% 58%;
+  }
+
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-base text-ink font-sans antialiased;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, hsl(120 20% 10% / 0.6), transparent),
+      url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 40L40 0' stroke='%23ffffff' stroke-opacity='0.015' stroke-width='0.5'/%3E%3C/svg%3E");
+    background-attachment: fixed;
+  }
+
+  ::selection {
+    background: hsl(var(--accent-muted));
+    color: hsl(var(--ink));
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--bg-surface));
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--ink-faint));
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-surface/80 backdrop-blur-sm border border-border/50;
+  }
+
+  .prose-nutriai {
+    @apply text-ink leading-relaxed;
+  }
+  .prose-nutriai strong {
+    @apply text-accent font-medium;
+  }
+  .prose-nutriai ul {
+    @apply list-disc pl-5 space-y-1;
+  }
+  .prose-nutriai p + p {
+    @apply mt-3;
+  }
+}
