@@ -85,8 +85,6 @@ docker-compose up -d                          # Levantar PostgreSQL + Redis
 docker-compose down                           # Bajar servicios
 npm run dev:api                               # API en puerto 3001
 npm run dev:web                               # Web en puerto 5173
-npm run build:api                             # Compilar API → dist/
-npm run build:web                             # Compilar Web → apps/web/dist/
 
 # API (desde apps/api)
 npm run dev                                   # Dev server con hot reload
@@ -110,7 +108,7 @@ Ver `apps/api/.env.example`. **Nunca** commitear `.env`.
 ## Estado del proyecto
 - [x] Fase 1 — Scaffold: estructura, docker, prisma schema, auth module
 - [x] Fase 2 — Core: profile (Harris-Benedict), chat (SSE), records, plans
-- [x] Fase 3 — Frontend: React + Vite web (puerto 5173) — todas las páginas implementadas
+- [x] Fase 3 — Frontend: React + Vite web (puerto 5173)
 - [ ] Fase 3 — Mobile: React Native + Expo
 - [ ] Fase 4 — Deploy: Railway (API + PostgreSQL + Redis) + Vercel (Web)
 
