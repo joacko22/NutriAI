@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Sparkles, Trash2, ChevronRight, ChevronDown, CalendarDays, Utensils } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Spinner } from '@/components/ui/Spinner';
 import { PlansSkeleton } from '@/components/ui/Skeleton';
-import { plansApi, type MealPlan, type MealDay, type MealItem } from '@/api/plans.api';
+import { plansApi, type MealDay, type MealItem } from '@/api/plans.api';
 import { formatDate } from '@/lib/utils';
 
 const MEAL_LABELS: Record<string, string> = {
