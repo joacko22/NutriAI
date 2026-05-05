@@ -23,7 +23,8 @@ async function main() {
     console.log(`📊 Records:   http://localhost:${config.port}/api/v1/records`);
     console.log(`📋 Plans:     http://localhost:${config.port}/api/v1/plans`);
     console.log(`🌍 Entorno:   ${config.nodeEnv}`);
-    console.log(`🌐 CORS:      ${config.clientUrl}\n`);
+    console.log(`🌐 CORS:      ${config.clientUrl}`);
+    console.log(`🔑 Google OAuth: ${config.google.clientId ? '✅ configurado' : '❌ no configurado'}\n`);
   });
 
   // Graceful shutdown
