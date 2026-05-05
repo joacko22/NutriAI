@@ -22,7 +22,8 @@ async function main() {
     console.log(`💬 Chat:      http://localhost:${config.port}/api/v1/chat`);
     console.log(`📊 Records:   http://localhost:${config.port}/api/v1/records`);
     console.log(`📋 Plans:     http://localhost:${config.port}/api/v1/plans`);
-    console.log(`🌍 Entorno:   ${config.nodeEnv}\n`);
+    console.log(`🌍 Entorno:   ${config.nodeEnv}`);
+    console.log(`🌐 CORS:      ${config.clientUrl}\n`);
   });
 
   // Graceful shutdown
