@@ -1,3 +1,8 @@
+import path from 'path';
+import { config as loadEnv } from 'dotenv';
+
+loadEnv({ path: path.join(__dirname, '..', '..', '.env') });
+
 export const config = {
   port:    parseInt(process.env.PORT ?? '3001'),
   nodeEnv: process.env.NODE_ENV ?? 'development',

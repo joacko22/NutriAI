@@ -1,6 +1,3 @@
-import path from 'path';
-import dotenv from 'dotenv';
-dotenv.config({ path: path.join(__dirname, '..', '.env') });
 import { createApp } from './app';
 import { config }    from './config';
 import { prisma }    from './config/prisma';
