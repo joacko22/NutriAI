@@ -1,3 +1,7 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 # NutriAI — Claude Code Context
 
 ## Proyecto
@@ -25,6 +29,8 @@ nutriai/
 - **Streaming**: SSE (Server-Sent Events)
 - **Validación**: Zod en todos los request bodies
 - **Logging**: pino + pino-http
+- **Frontend**: React 19 + Vite + TypeScript, React Query, Zustand, Tailwind CSS, Recharts
+- **Routing web**: React Router v6 con `createBrowserRouter`, layout anidado vía `<Outlet>`
 
 ## Reglas de arquitectura — NUNCA violar
 
@@ -77,9 +83,14 @@ modules/
 # Infra (desde raíz)
 docker-compose up -d                          # Levantar PostgreSQL + Redis
 docker-compose down                           # Bajar servicios
+npm run dev:api                               # API en puerto 3001
+npm run dev:web                               # Web en puerto 5173
+npm run build:api                             # Compilar API → dist/
+npm run build:web                             # Compilar Web → apps/web/dist/
 
 # API (desde apps/api)
 npm run dev                                   # Dev server con hot reload
+npm run start                                 # Producción (requiere build previo)
 npx prisma migrate dev --name <nombre>        # Nueva migración
 npx prisma generate                           # Regenerar cliente TypeScript
 npx prisma studio                             # GUI visual de la BD
@@ -92,18 +103,74 @@ node -e "const c=require('crypto');console.log(c.randomBytes(64).toString('hex')
 ## Variables de entorno
 Ver `apps/api/.env.example`. **Nunca** commitear `.env`.
 
+**API** (`apps/api/.env`): `DATABASE_URL`, `REDIS_URL`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_CALLBACK_URL`, `GEMINI_API_KEY`, `GROQ_API_KEY`, `CLIENT_URL`, `PORT`, `NODE_ENV`
+
+**Web** (`apps/web/.env`): `VITE_API_URL` (default: `http://localhost:3001`)
+
 ## Estado del proyecto
 - [x] Fase 1 — Scaffold: estructura, docker, prisma schema, auth module
 - [x] Fase 2 — Core: profile (Harris-Benedict), chat (SSE), records, plans
-- [ ] Fase 3 — Frontend: React + Vite web
+- [x] Fase 3 — Frontend: React + Vite web (puerto 5173) — todas las páginas implementadas
 - [ ] Fase 3 — Mobile: React Native + Expo
-- [ ] Fase 4 — Deploy: Railway + Vercel
+- [ ] Fase 4 — Deploy: Railway (API + PostgreSQL + Redis) + Vercel (Web)
+
+## Arquitectura frontend (`apps/web`)
+
+### Capas
+```
+src/
+  api/          → Funciones tipadas por módulo (auth.api.ts, chat.api.ts, ...)
+  stores/       → Zustand (solo auth.store.ts — estado persistido en localStorage)
+  pages/        → Un archivo por ruta (DashboardPage, ChatPage, ...)
+  components/   → Layout, Sidebar, ProtectedRoute + ui/ (primitivos sin lógica)
+  lib/utils.ts  → cn() helper de clases Tailwind
+```
+
+### Cliente HTTP (`src/api/client.ts`)
+- `api.get/post/put/patch/delete` — wrapper fetch tipado con Bearer token automático
+- `api.stream()` — retorna `Response` cruda para leer SSE chunk a chunk
+- En 401: intenta un silent refresh; si falla, borra `localStorage` y redirige a `/login`
+- Los tokens se leen **directamente de `localStorage`** (key `nutriai-auth`) para evitar dependencia circular con Zustand
+
+### Auth & OAuth
+- Tokens (access + refresh) se persisten en Zustand `persist` → `localStorage`
+- Google OAuth: el backend redirige a `CLIENT_URL/auth/callback?accessToken=...&refreshToken=...` con los tokens en query params; `OAuthCallbackPage` los consume y llama `login()`
+- Access token expira en 15 min; el cliente reintenta automáticamente con el refresh token
+
+### Alias de paths
+- `@/` → `apps/web/src/` (configurado en `tsconfig.app.json` y `vite.config.ts`)
+
+### Shared types (`packages/shared`)
+- `@nutriai/shared` exporta tipos TypeScript compartidos entre API y Web (ej. `AuthResponse`)
 
 ## Fórmula nutricional
 Harris-Benedict revisada (Roza & Shizgal 1984) implementada en `shared/utils/harris-benedict.ts`
 - Hombres: `88.362 + (13.397 × peso) + (4.799 × altura) - (5.677 × edad)`
 - Mujeres: `447.593 + (9.247 × peso) + (3.098 × altura) - (4.330 × edad)`
 - TDEE = BMR × factor de actividad (1.2 a 1.9)
+
+## Deploy (Fase 4)
+
+### Infraestructura
+| Servicio | Plataforma | Dockerfile |
+|---|---|---|
+| API (Express) | Railway | `apps/api/Dockerfile` |
+| PostgreSQL | Railway plugin | — |
+| Redis | Railway plugin | — |
+| Web (React/Vite) | Railway | `apps/web/Dockerfile` (nginx) |
+
+### Variables de entorno Railway — API service
+Todas las de `apps/api/.env.example`, más:
+- `NODE_ENV=production`
+- `CLIENT_URL=https://<web-domain>`
+- `GOOGLE_CALLBACK_URL=https://<api-domain>/api/v1/auth/google/callback`
+
+### Variable de build Railway — Web service
+- `VITE_API_URL=https://<api-domain>` (build argument, no env var runtime)
+
+### Prisma en producción
+`migrate deploy` se ejecuta automáticamente en cada startup via CMD del Dockerfile.
+Nunca usar `migrate dev` ni `migrate reset` en producción.
 
 ## Decisiones de arquitectura
 Documentadas en `docs/` — ver ADR para justificación de cada elección tecnológica.

@@ -4,6 +4,7 @@ import cors          from 'cors';
 import helmet        from 'helmet';
 import pinoHttp      from 'pino-http';
 import { config }    from './config';
+import { passport }  from './shared/utils/passport';
 import { errorHandler } from './shared/middleware/error.middleware';
 import { authRouter }    from './modules/auth/auth.router';
 import { profileRouter } from './modules/profile/profile.router';
@@ -25,6 +26,7 @@ export function createApp() {
   // ── Parsing ───────────────────────────────────────────────────────────────
   app.use(express.json({ limit: '2mb' }));
   app.use(express.urlencoded({ extended: true }));
+  app.use(passport.initialize());
 
   // ── Logging ───────────────────────────────────────────────────────────────
   app.use(pinoHttp({ quietReqLogger: true }));

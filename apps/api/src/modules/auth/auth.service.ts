@@ -61,6 +61,8 @@ export const authService = {
     // 1. Buscar por googleId
     let user = await authRepository.findByGoogleId(googleProfile.id);
 
+    let isNewUser = false;
+
     if (!user) {
       // 2. Buscar por email (vincular cuenta existente)
       const byEmail = await authRepository.findByEmail(googleProfile.email);
@@ -73,10 +75,11 @@ export const authService = {
           email:    googleProfile.email,
           googleId: googleProfile.id,
         });
+        isNewUser = true;
       }
     }
 
-    return this._issueTokens({ id: user.id, email: user.email, role: user.role });
+    return { ...(await this._issueTokens({ id: user.id, email: user.email, role: user.role })), isNewUser };
   },
 
   async _issueTokens(user: { id: string; email: string; role: string }) {

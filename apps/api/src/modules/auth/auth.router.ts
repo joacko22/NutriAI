@@ -2,6 +2,8 @@ import { Router } from 'express';
 import { z }      from 'zod';
 import { authService } from './auth.service';
 import { AppError }    from '../../shared/middleware/error.middleware';
+import { passport }    from '../../shared/utils/passport';
+import { config }      from '../../config';
 
 export const authRouter = Router();
 
@@ -43,3 +45,33 @@ authRouter.post('/logout', async (req, res) => {
   if (refreshToken) await authService.logout(refreshToken);
   res.json({ message: 'Sesión cerrada correctamente' });
 });
+
+// GET /api/v1/auth/google — inicia el flujo OAuth con Google
+authRouter.get('/google',
+  passport.authenticate('google', { scope: ['profile', 'email'], session: false }),
+);
+
+// GET /api/v1/auth/google/callback — Google redirige aquí tras autenticar
+authRouter.get('/google/callback',
+  passport.authenticate('google', {
+    session:         false,
+    failureRedirect: `${config.clientUrl}/login?error=oauth_failed`,
+  }),
+  (req, res) => {
+    const { accessToken, refreshToken, user, isNewUser } = req.user as unknown as {
+      accessToken:  string;
+      refreshToken: string;
+      user:         { id: string; email: string; role: string };
+      isNewUser:    boolean;
+    };
+    const params = new URLSearchParams({
+      accessToken,
+      refreshToken,
+      userId:    user.id,
+      userEmail: user.email,
+      userRole:  user.role,
+      isNewUser: String(isNewUser),
+    });
+    res.redirect(`${config.clientUrl}/auth/callback?${params.toString()}`);
+  },
+);
