@@ -110,7 +110,7 @@ export default function ProfilePage() {
   };
 
   if (isLoading) return (
-    <div className="p-8 max-w-4xl mx-auto space-y-6">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto space-y-6">
       <div className="space-y-2">
         <Skeleton className="h-8 w-36" />
         <Skeleton className="h-4 w-64" />
@@ -120,7 +120,7 @@ export default function ProfilePage() {
           {Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="rounded-xl border border-border bg-surface p-5 space-y-4">
               <Skeleton className="h-5 w-40" />
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Skeleton className="h-10 w-full" />
                 <Skeleton className="h-10 w-full" />
                 <Skeleton className="h-10 w-full" />
@@ -140,9 +140,9 @@ export default function ProfilePage() {
   );
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
-      <div className="mb-8 animate-fade-up">
-        <h1 className="font-serif text-3xl text-ink">Mi perfil</h1>
+    <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
+      <div className="mb-6 lg:mb-8 animate-fade-up">
+        <h1 className="font-serif text-2xl sm:text-3xl text-ink">Mi perfil</h1>
         <p className="text-sm text-ink-muted mt-1">Tus datos personales y objetivos nutricionales</p>
       </div>
 
@@ -161,7 +161,7 @@ export default function ProfilePage() {
                   value={form.name ?? ''}
                   onChange={e => set('name', e.target.value)}
                 />
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <Input
                     label="Fecha de nacimiento"
                     type="date"
@@ -187,7 +187,7 @@ export default function ProfilePage() {
                     </div>
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   <Input
                     label="Altura (cm)"
                     type="number" min={100} max={250}

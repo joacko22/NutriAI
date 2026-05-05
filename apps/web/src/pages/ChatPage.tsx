@@ -26,7 +26,7 @@ function MessageBubble({ msg }: { msg: ChatMessage }) {
       }`}>
         {isUser ? <User size={13} /> : <Bot size={13} />}
       </div>
-      <div className={`max-w-[75%] ${isUser ? 'items-end' : 'items-start'} flex flex-col gap-1`}>
+      <div className={`max-w-[85%] sm:max-w-[75%] ${isUser ? 'items-end' : 'items-start'} flex flex-col gap-1`}>
         <div className={`rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
           isUser
             ? 'bg-accent/15 border border-accent/25 text-ink rounded-tr-sm'
@@ -46,7 +46,7 @@ function StreamingBubble({ content }: { content: string }) {
       <div className="h-7 w-7 shrink-0 rounded-full flex items-center justify-center text-xs mt-0.5 bg-raised border border-border text-ink-muted">
         <Bot size={13} />
       </div>
-      <div className="max-w-[75%]">
+      <div className="max-w-[85%] sm:max-w-[75%]">
         <div className="rounded-2xl rounded-tl-sm px-4 py-2.5 text-sm leading-relaxed bg-surface border border-border text-ink whitespace-pre-wrap">
           {content || <span className="inline-flex gap-1 items-center text-ink-faint"><span className="animate-blink">▋</span></span>}
           {content && <span className="animate-blink ml-0.5 text-accent">▋</span>}
@@ -158,7 +158,7 @@ export default function ChatPage() {
   const hasMessages = messages.length > 0 || !!optimisticMsg;
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-full">
       {/* Header */}
       <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-border bg-surface">
         <div className="flex items-center gap-3">
@@ -189,7 +189,7 @@ export default function ChatPage() {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
+      <div className="flex-1 overflow-y-auto px-3 py-4 sm:px-6 sm:py-6 space-y-5">
         {isLoading && <ChatHistorySkeleton />}
 
         {!isLoading && !hasMessages && (
@@ -233,7 +233,7 @@ export default function ChatPage() {
       </div>
 
       {/* Input */}
-      <div className="shrink-0 border-t border-border bg-surface px-6 py-4">
+      <div className="shrink-0 border-t border-border bg-surface px-3 py-3 sm:px-6 sm:py-4">
         <div className="flex gap-3 items-end max-w-3xl mx-auto">
           <textarea
             ref={inputRef}

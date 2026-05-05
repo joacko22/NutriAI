@@ -115,7 +115,7 @@ function PlanDetail({ planId, onClose }: { planId: string; onClose: () => void }
     <div className="fixed inset-0 z-50 flex items-start justify-end">
       <div className="absolute inset-0 bg-base/60 backdrop-blur-sm" onClick={onClose} />
       <div className="relative h-full w-full max-w-2xl bg-surface border-l border-border overflow-y-auto">
-        <div className="sticky top-0 bg-surface border-b border-border px-6 py-4 flex items-center justify-between z-10">
+        <div className="sticky top-0 bg-surface border-b border-border px-4 py-3 sm:px-6 sm:py-4 flex items-center justify-between z-10">
           <div>
             <p className="font-medium text-ink">{plan?.title ?? 'Plan semanal'}</p>
             {plan?.weekStart && (
@@ -130,7 +130,7 @@ function PlanDetail({ planId, onClose }: { planId: string; onClose: () => void }
           </button>
         </div>
 
-        <div className="p-6 space-y-3">
+        <div className="p-4 sm:p-6 space-y-3">
           {isLoading && <div className="flex justify-center py-8"><Spinner /></div>}
           {plan?.days?.map((day, i) => (
             <DaySection key={day.id} day={day} defaultOpen={i === 0} />
@@ -180,10 +180,10 @@ export default function PlansPage() {
   });
 
   return (
-    <div className="p-8 max-w-3xl mx-auto">
-      <div className="mb-8 flex items-start justify-between animate-fade-up">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-3xl mx-auto">
+      <div className="mb-6 lg:mb-8 flex items-start justify-between gap-4 animate-fade-up">
         <div>
-          <h1 className="font-serif text-3xl text-ink">Planes alimentarios</h1>
+          <h1 className="font-serif text-2xl sm:text-3xl text-ink">Planes alimentarios</h1>
           <p className="text-sm text-ink-muted mt-1">Planes semanales generados con IA adaptados a tu perfil</p>
         </div>
         <Button
@@ -230,8 +230,8 @@ export default function PlansPage() {
                   </div>
                   <div>
                     <p className="text-sm font-medium text-ink">{plan.title}</p>
-                    <p className="text-xs text-ink-faint mt-0.5">
-                      Semana del {formatDate(plan.weekStart)} · Creado {formatDate(plan.createdAt)}
+                    <p className="text-xs text-ink-faint mt-0.5 truncate max-w-[180px] sm:max-w-none">
+                      Semana del {formatDate(plan.weekStart)} · {formatDate(plan.createdAt)}
                     </p>
                   </div>
                 </div>
@@ -242,7 +242,7 @@ export default function PlansPage() {
                       e.stopPropagation();
                       if (confirm('¿Eliminar este plan?')) deleteMutation.mutate(plan.id);
                     }}
-                    className="p-1.5 text-ink-faint hover:text-danger hover:bg-danger/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                    className="p-1.5 text-ink-faint hover:text-danger hover:bg-danger/10 rounded-lg transition-colors sm:opacity-0 sm:group-hover:opacity-100"
                   >
                     <Trash2 size={13} />
                   </button>

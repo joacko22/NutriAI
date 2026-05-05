@@ -35,7 +35,7 @@ function RecordForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Input
           label="Peso (kg) *"
           type="number" min={30} max={300} step={0.1} required
@@ -138,9 +138,9 @@ export default function RecordsPage() {
   };
 
   return (
-    <div className="p-8 max-w-3xl mx-auto">
-      <div className="mb-8 animate-fade-up">
-        <h1 className="font-serif text-3xl text-ink">Registros corporales</h1>
+    <div className="p-4 sm:p-6 lg:p-8 max-w-3xl mx-auto">
+      <div className="mb-6 lg:mb-8 animate-fade-up">
+        <h1 className="font-serif text-2xl sm:text-3xl text-ink">Registros corporales</h1>
         <p className="text-sm text-ink-muted mt-1">Seguí la evolución de tu peso y composición corporal</p>
       </div>
 
@@ -183,51 +183,50 @@ export default function RecordsPage() {
                         />
                       </div>
                     ) : (
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex items-center gap-4">
-                          <div>
-                            <p className="font-mono text-base text-ink font-medium">{formatWeight(rec.weightKg)}</p>
-                            <p className="text-xs text-ink-faint mt-0.5">{formatDate(rec.recordedAt)}</p>
-                          </div>
-                          <div className="flex items-center gap-3 text-xs font-mono">
-                            {rec.bodyFatPct && (
-                              <span className="text-ink-muted">{rec.bodyFatPct}% grasa</span>
+                      <div>
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-3">
+                            <div>
+                              <p className="font-mono text-base text-ink font-medium">{formatWeight(rec.weightKg)}</p>
+                              <p className="text-xs text-ink-faint mt-0.5">{formatDate(rec.recordedAt)}</p>
+                            </div>
+                            {diff !== null && (
+                              <span className={`flex items-center gap-1 text-xs font-mono ${
+                                diff < 0 ? 'text-accent' : diff > 0 ? 'text-danger' : 'text-ink-muted'
+                              }`}>
+                                {diff < 0 ? <TrendingDown size={12}/> : diff > 0 ? <TrendingUp size={12}/> : <Minus size={12}/>}
+                                {diff !== 0 ? `${diff > 0 ? '+' : ''}${diff.toFixed(1)}kg` : 'igual'}
+                              </span>
                             )}
-                            {rec.waistCm && (
-                              <span className="text-ink-muted">{rec.waistCm}cm cintura</span>
+                          </div>
+                          <div className="flex items-center gap-1 shrink-0">
+                            <button
+                              onClick={() => setEditingId(rec.id)}
+                              className="p-1.5 text-ink-faint hover:text-ink hover:bg-raised rounded-lg transition-colors"
+                            >
+                              <Pencil size={13} />
+                            </button>
+                            <button
+                              onClick={() => {
+                                if (confirm('¿Eliminar este registro?')) deleteMutation.mutate(rec.id);
+                              }}
+                              className="p-1.5 text-ink-faint hover:text-danger hover:bg-danger/10 rounded-lg transition-colors"
+                            >
+                              <Trash2 size={13} />
+                            </button>
+                          </div>
+                        </div>
+                        {(rec.bodyFatPct || rec.waistCm || rec.notes) && (
+                          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5 text-xs font-mono text-ink-muted">
+                            {rec.bodyFatPct && <span>{rec.bodyFatPct}% grasa</span>}
+                            {rec.waistCm && <span>{rec.waistCm}cm cintura</span>}
+                            {rec.notes && (
+                              <span className="text-ink-faint truncate max-w-[200px]" title={rec.notes}>
+                                {rec.notes}
+                              </span>
                             )}
                           </div>
-                          {diff !== null && (
-                            <span className={`flex items-center gap-1 text-xs font-mono ${
-                              diff < 0 ? 'text-accent' : diff > 0 ? 'text-danger' : 'text-ink-muted'
-                            }`}>
-                              {diff < 0 ? <TrendingDown size={12}/> : diff > 0 ? <TrendingUp size={12}/> : <Minus size={12}/>}
-                              {diff !== 0 ? `${diff > 0 ? '+' : ''}${diff.toFixed(1)}kg` : 'igual'}
-                            </span>
-                          )}
-                        </div>
-
-                        <div className="flex items-center gap-1 shrink-0">
-                          {rec.notes && (
-                            <p className="text-xs text-ink-faint mr-2 max-w-[140px] truncate" title={rec.notes}>
-                              {rec.notes}
-                            </p>
-                          )}
-                          <button
-                            onClick={() => setEditingId(rec.id)}
-                            className="p-1.5 text-ink-faint hover:text-ink hover:bg-raised rounded-lg transition-colors"
-                          >
-                            <Pencil size={13} />
-                          </button>
-                          <button
-                            onClick={() => {
-                              if (confirm('¿Eliminar este registro?')) deleteMutation.mutate(rec.id);
-                            }}
-                            className="p-1.5 text-ink-faint hover:text-danger hover:bg-danger/10 rounded-lg transition-colors"
-                          >
-                            <Trash2 size={13} />
-                          </button>
-                        </div>
+                        )}
                       </div>
                     )}
                   </div>

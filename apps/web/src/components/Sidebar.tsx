@@ -14,7 +14,12 @@ const NAV = [
   { to: '/plans',   icon: CalendarDays,    label: 'Planes'      },
 ];
 
-export function Sidebar() {
+interface SidebarProps {
+  open?: boolean;
+  onClose?: () => void;
+}
+
+export function Sidebar({ open = false, onClose }: SidebarProps) {
   const { user, refreshToken, logout } = useAuthStore();
   const navigate = useNavigate();
 
@@ -25,7 +30,12 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="flex h-screen w-56 flex-col border-r border-border bg-surface">
+    <aside className={cn(
+      'flex h-screen w-56 shrink-0 flex-col border-r border-border bg-surface',
+      'fixed inset-y-0 left-0 z-30 transition-transform duration-200',
+      'lg:static lg:translate-x-0',
+      open ? 'translate-x-0' : '-translate-x-full',
+    )}>
       {/* Logo */}
       <div className="flex items-center gap-2.5 px-5 py-5 border-b border-border">
         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/15 border border-accent/25">
@@ -41,7 +51,8 @@ export function Sidebar() {
             key={to}
             to={to}
             end={to === '/'}
-                    className={({ isActive }) =>
+            onClick={onClose}
+            className={({ isActive }) =>
               cn(
                 'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors duration-150',
                 isActive

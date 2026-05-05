@@ -119,11 +119,11 @@ export default function DashboardPage() {
   const greeting = greetingHour < 12 ? 'Buenos días' : greetingHour < 19 ? 'Buenas tardes' : 'Buenas noches';
 
   return (
-    <div className="p-8 max-w-5xl mx-auto">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto">
       {/* Header */}
-      <div className="mb-8 animate-fade-up">
+      <div className="mb-6 lg:mb-8 animate-fade-up">
         <p className="text-ink-muted text-sm mb-1">{greeting}</p>
-        <h1 className="font-serif text-3xl text-ink">
+        <h1 className="font-serif text-2xl sm:text-3xl text-ink">
           {profile?.name ?? user?.email?.split('@')[0] ?? 'Usuario'}
         </h1>
         {profile?.goalType && (
@@ -133,7 +133,7 @@ export default function DashboardPage() {
 
       {/* Profile incomplete banner */}
       {!hasProfile && (
-        <div className="mb-6 rounded-xl border border-warn/30 bg-warn/10 p-4 flex items-center justify-between animate-fade-up">
+        <div className="mb-6 rounded-xl border border-warn/30 bg-warn/10 p-4 flex flex-wrap items-center gap-3 animate-fade-up">
           <div>
             <p className="text-sm font-medium text-warn">Completá tu perfil</p>
             <p className="text-xs text-ink-muted mt-0.5">La IA necesita tus datos para personalizar el asesoramiento</p>
@@ -147,7 +147,7 @@ export default function DashboardPage() {
       )}
 
       {/* Metric cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
         <MetricCard
           label="Peso actual"
           value={weight ? formatWeight(weight) : '—'}

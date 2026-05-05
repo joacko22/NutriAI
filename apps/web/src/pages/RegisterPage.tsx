@@ -44,7 +44,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-8">
+    <div className="min-h-screen flex items-center justify-center p-4 sm:p-8">
       <div className="w-full max-w-sm animate-fade-up">
         <div className="mb-8">
           <div className="flex items-center gap-2.5 mb-6">

@@ -75,7 +75,7 @@ export default function LoginPage() {
       </div>
 
       {/* Right panel — form */}
-      <div className="flex flex-1 flex-col items-center justify-center p-8">
+      <div className="flex flex-1 flex-col items-center justify-center p-4 sm:p-8">
         <div className="w-full max-w-sm animate-fade-up">
           <div className="mb-8">
             <h2 className="font-serif text-2xl text-ink mb-1">Bienvenido de vuelta</h2>
