@@ -64,7 +64,7 @@ function WeightChart({ records }: { records: BodyRecord[] }) {
             fontFamily:   '"JetBrains Mono", monospace',
             color:        'hsl(120 10% 91%)',
           }}
-          formatter={(v: number) => [`${v} kg`, 'Peso']}
+          formatter={(v) => [`${v ?? '—'} kg`, 'Peso']}
           labelStyle={{ color: 'hsl(120 6% 28%)', marginBottom: '2px' }}
           cursor={{ stroke: 'hsl(120 8% 20%)', strokeWidth: 1 }}
         />
