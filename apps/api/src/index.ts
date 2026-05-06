@@ -3,6 +3,9 @@ import { config }    from './config';
 import { prisma }    from './config/prisma';
 import { redis }     from './config/redis';
 
+const googleEnvKeys = Object.keys(process.env).filter(k => k.startsWith('GOOGLE'));
+console.log('🔍 GOOGLE env vars detectadas:', googleEnvKeys.length ? googleEnvKeys : 'NINGUNA');
+
 async function main() {
   // Verificar conexión a PostgreSQL
   await prisma.$connect();
